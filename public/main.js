@@ -1,4 +1,3 @@
-// public/main.js
 const socket = io();
 let currentEditId = null; // Variable to track the ID of the message being edited
 
