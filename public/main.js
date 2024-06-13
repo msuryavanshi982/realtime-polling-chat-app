@@ -1,4 +1,6 @@
+// public/main.js
 const socket = io();
+let currentEditId = null; // Variable to track the ID of the message being edited
 
 socket.on('init', (data) => {
   updatePollResults(data.polls);
@@ -31,11 +33,20 @@ function vote(option) {
 
 function sendMessage() {
   const username = document.getElementById('username').value;
-  const message = document.getElementById('message').value;
-  if (username && message) {
+  const message = document.getElementById('message').value.trim();
+
+  if (!username || !message) return;
+
+  if (currentEditId !== null) {
+    // If editing a message
+    socket.emit('editMessage', { id: currentEditId, message });
+    currentEditId = null; // Reset the current edit ID
+  } else {
+    // If sending a new message
     socket.emit('sendMessage', { username, message });
-    document.getElementById('message').value = '';
   }
+
+  document.getElementById('message').value = ''; // Clear the input field
 }
 
 function updatePollResults(polls) {
@@ -58,7 +69,7 @@ function appendMessage(message) {
   msgElement.setAttribute('data-id', message.id);
   msgElement.innerHTML = `
     <strong>${message.username}:</strong> ${message.message}
-    <button onclick="editMessage(${message.id})">Edit</button>
+    <button onclick="editMessage(${message.id}, '${message.message}')">Edit</button>
     <button onclick="deleteMessage(${message.id})">Delete</button>
   `;
   messageContainer.appendChild(msgElement);
@@ -69,7 +80,7 @@ function updateMessage(message) {
   if (msgElement) {
     msgElement.innerHTML = `
       <strong>${message.username}:</strong> ${message.message}
-      <button onclick="editMessage(${message.id})">Edit</button>
+      <button onclick="editMessage(${message.id}, '${message.message}')">Edit</button>
       <button onclick="deleteMessage(${message.id})">Delete</button>
     `;
   }
@@ -93,13 +104,14 @@ function showTypingIndicator(username) {
 function addEmoji(emoji) {
   const messageInput = document.getElementById('message');
   messageInput.value += emoji;
+  messageInput.focus(); // Re-focus the input box after adding the emoji
 }
 
-function editMessage(messageId) {
-  const newMessage = prompt("Edit your message:");
-  if (newMessage) {
-    socket.emit('editMessage', { id: messageId, message: newMessage });
-  }
+function editMessage(messageId, messageText) {
+  const messageInput = document.getElementById('message');
+  messageInput.value = messageText; // Place the message text in the input box
+  messageInput.focus(); // Focus on the input box for editing
+  currentEditId = messageId; // Track the ID of the message being edited
 }
 
 function deleteMessage(messageId) {
@@ -112,5 +124,13 @@ document.getElementById('message').addEventListener('input', () => {
   const username = document.getElementById('username').value;
   if (username) {
     socket.emit('typing', username);
+  }
+});
+
+// Add event listener for the Enter key to send messages
+document.getElementById('message').addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault(); // Prevent the default Enter key behavior (such as form submission)
+    sendMessage(); // Call sendMessage function when Enter key is pressed
   }
 });
