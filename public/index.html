@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polling and Chat App</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div id="headline">
+    <h1>Realtime Polling and Chat App</h1>
+  </div>
+  <div id="app">
+    <div id="poll">
+      <h2>Vote</h2>
+      <button class="vote-btn" onclick="vote('option1')">Option 1</button>
+      <button class="vote-btn" onclick="vote('option2')">Option 2</button>
+      <button class="vote-btn" onclick="vote('option3')">Option 3</button>
+      <div id="poll-results"></div>
+    </div>
+    <div id="chat">
+      <h2>Chat</h2>
+      <div id="messages"></div>
+      <div id="typing-indicator">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <input id="username" type="text" placeholder="Your name">
+      <input id="email" type="email" placeholder="Your email">
+      <button class="register-btn" onclick="registerUser()">Register</button>
+      <div id="emoji-container">
+        <button onclick="addEmoji('😊')">😊</button>
+        <button onclick="addEmoji('😂')">😂</button>
+        <button onclick="addEmoji('😍')">😍</button>
+        <button onclick="addEmoji('😎')">😎</button>
+        <button onclick="addEmoji('😢')">😢</button>
+        <button onclick="addEmoji('😡')">😡</button>
+        <button onclick="addEmoji('😇')">😇</button>
+        <button onclick="addEmoji('🤔')">🤔</button>
+        <button onclick="addEmoji('👍')">👍</button>
+        <button onclick="addEmoji('👏')">👏</button>
+        <button onclick="addEmoji('🙌')">🙌</button>
+        <button onclick="addEmoji('❤️')">❤️</button>
+        <button onclick="addEmoji('💔')">💔</button>
+        <button onclick="addEmoji('🎉')">🎉</button>
+        <button onclick="addEmoji('🔥')">🔥</button>
+        <button onclick="addEmoji('🌟')">🌟</button>
+        <button onclick="addEmoji('💯')">💯</button>
+      </div>
+      <input id="message" type="text" placeholder="Type a message">
+      <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
